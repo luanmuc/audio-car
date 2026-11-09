@@ -1,0 +1,196 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+    # 排除不产出 APK 的路径：CI 自动回写版本信息文件（publish/npm-version-info）防循环；
+    # 文档类（README/AGENTS/CUSTOM_CHANGELOG/docs 等）不参与构建产物，改文档不浪费云编译
+    paths-ignore:
+      - 'publish/**'
+      - 'npm-version-info/**'
+      - 'README.md'
+      - 'docs/**'
+  workflow_dispatch: {}
+
+# 仓库默认 GITHUB_TOKEN 为只读：下载 artifact 需 actions:read，创建 Release 需 contents:write
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  Android:
+    name: Android
+    runs-on: ubuntu-latest
+    outputs:
+      build: ${{ steps.buildstate.outputs.build }}
+      versionCode: ${{ steps.buildstate.outputs.versionCode }}
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v4
+
+      - name: Download latest music source
+        run: |
+          echo "Downloading latest music source (lx-source.js)..."
+          # 本仓库不内置音源副本：builtin_source.js 由每次编译时从音源仓库 master 拉取最新版本覆盖生成。
+          # 使用 GitHub Contents API（Accept: raw + ?ref=master）获取最新提交内容，
+          # 绕过 raw.githubusercontent.com 的 CDN 缓存，确保每次编译都拉到最新
+          mkdir -p android/app/src/main/assets
+          curl -fsSL -H "Authorization: Bearer ${{ github.token }}" \
+            -H "Accept: application/vnd.github.raw" \
+            "https://api.github.com/repos/luanmuc/backend-api/contents/lx-source.js?ref=master" \
+            -o android/app/src/main/assets/builtin_source.js
+          # 内容校验：文件须大于50KB且含 @name 标记（第一行为 /*! 注释符，取前5行匹配）
+          [ "$(stat -c%s android/app/src/main/assets/builtin_source.js)" -gt 50000 ] || { echo "音源文件过小"; exit 1; }
+          head -5 android/app/src/main/assets/builtin_source.js | grep -q "@name" || { echo "音源文件异常"; exit 1; }
+          ls -lh android/app/src/main/assets/builtin_source.js
+          # 输出音源版本行（便于每次构建核对是否已拉到最新版）
+          # ── 跨仓闸门：文档里的内置音源版本必须等于本次实际拉到的 @version ──
+          SRC_VER=$(grep -o "@version [0-9.]*" android/app/src/main/assets/builtin_source.js | head -1 | awk '{print $2}')
+          DOC_VER=$(grep -o "豆包定制 v[0-9.]*" docs/MUSIC_SOURCE_GUIDE.md | head -1 | sed 's/豆包定制 v//')
+          if [ "$SRC_VER" != "$DOC_VER" ]; then
+            echo "❌ 文档音源版本 ${DOC_VER:-未找到} ≠ 本次内置 ${SRC_VER}"
+            echo "   → 请先更新 docs/MUSIC_SOURCE_GUIDE.md（§四标题与正文两处）后再构建"
+            exit 1
+          fi
+          echo "✅ 跨仓版本一致：MUSIC_SOURCE_GUIDE 与内置音源均为 v${SRC_VER}"
+          grep -o "@version [0-9.]*" android/app/src/main/assets/builtin_source.js | head -1
+          head -2 android/app/src/main/assets/builtin_source.js
+          # debug：确认拉到的音源里有没有 config/trend action
+          echo "音源 actions 检查："
+          grep -c 'actions.push.*"config"' android/app/src/main/assets/builtin_source.js && echo "  有 config action" || echo "  没有 config action！"
+          grep -c 'actions.push.*"trend"' android/app/src/main/assets/builtin_source.js && echo "  有 trend action" || echo "  没有 trend action！"
+
+      - name: Setup Env
+        uses: ./.github/actions/setup
+
+      - name: Compute build number
+        # 构建序号与 versionCode 统一由 publish/build-state.json 状态文件驱动：
+        # 底座版本（package.json version）变化时 bN 从 1 重新计数（如 1.9.2-b1），
+        # versionCode 持续递增（保证老用户可覆盖安装）。
+        id: buildstate
+        run: |
+          node -e "
+            const fs = require('fs');
+            const f = 'publish/build-state.json';
+            const p = JSON.parse(fs.readFileSync(f, 'utf8'));
+            const cur = require('./package.json').version;
+            if (p.baseVersion !== cur) { p.baseVersion = cur; p.build = 0; }
+            p.build += 1; p.versionCode += 1;
+            fs.writeFileSync(f, JSON.stringify(p, null, 2) + '\n');
+          "
+          echo "build=$(node -p "JSON.parse(require('fs').readFileSync('publish/build-state.json','utf8')).build")" >> "$GITHUB_OUTPUT"
+          echo "versionCode=$(node -p "JSON.parse(require('fs').readFileSync('publish/build-state.json','utf8')).versionCode")" >> "$GITHUB_OUTPUT"
+
+      - name: Build Release APK
+        env:
+          DISABLE_SVG: 1
+        shell: bash
+        run: |
+          # 版本标识注入：versionName=1.9.2-b<build>（底座内计数）、versionCode 持续递增
+          # （build.gradle 支持 env 覆盖，package.json 的 version 与底座同步，release tag 自动跟随）
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          BUILD_NUM=${{ steps.buildstate.outputs.build }}
+          APP_VERSION_CODE=${{ steps.buildstate.outputs.versionCode }}
+          export APP_VERSION_NAME="${PACKAGE_VERSION}-b${BUILD_NUM}"
+          export APP_VERSION_CODE="${APP_VERSION_CODE}"
+          echo "export const buildNumber = 'b${BUILD_NUM}'" > src/config/buildNumber.ts
+          echo "构建版本: ${APP_VERSION_NAME} (versionCode ${APP_VERSION_CODE})"
+          cd android
+          # release 变体自动打包 JS bundle（debug 变体不含 bundle，安装后无法独立运行）；
+          # 无 secrets 时签名自动降级为 debug.keystore（build.gradle 已配置），可正常安装
+          ./gradlew assembleRelease
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: luanmuc-lxmusic-release
+          # build.gradle 按 ABI 拆分输出：mobile-app-vX.Y.Z-{arm64-v8a,armeabi-v7a,x86_64,x86,universal}.apk
+          path: android/app/build/outputs/apk/release/*.apk
+
+  Release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: [Android]
+    steps:
+      - name: Check out git repository
+        # fetch-depth: 0 拉取全部历史与 tags，供 gen_change_log.py 计算"自上次 tag 以来的变更"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+          merge-multiple: true
+
+      - name: List Artifacts
+        run: |
+          echo "Artifacts:"; ls -la artifacts/
+
+      - name: Generate file MD5
+        # 发布说明动态生成：变更列表来自 git log（自上次 tag 以来，过滤 CI 自动提交），
+        # 每次构建真实反映本次变更；首次构建（无 tag）回退最近 30 条。
+        # 人工维护的历史归档见根目录 CUSTOM_CHANGELOG.md。
+        run: |
+          python3 scripts/gen_change_log.py
+          echo "--- changeLog.md ---"
+          cat publish/changeLog.md
+
+      - name: Get package version
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
+          echo "RUN_NUMBER=${{ needs.Android.outputs.build }}" >> $GITHUB_ENV
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: ./publish/changeLog.md
+          prerelease: true
+          draft: false
+          # 每次构建唯一 tag（版本号+构建序号），避免同一版本重复构建时 tag 冲突
+          tag_name: v${{ env.PACKAGE_VERSION }}-b${{ env.RUN_NUMBER }}
+          files: |
+            artifacts/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update publish version.json
+        env:
+          # 不带 v 前缀：App 下载时拼 release tag 用（releases/download/v${version}）
+          LX_VER: ${{ env.PACKAGE_VERSION }}-b${{ env.RUN_NUMBER }}
+        run: |
+          python3 scripts/update_version_info.py
+
+      - name: Publish npm version info
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          # 脚本会更新 npm-version-info/package.json 并尝试 npm publish；
+          # 无/失效 NPM_TOKEN 时允许继续（Release 已发布，version.json 仍会提交），
+          # 错误信息通过 ::error:: 展示，维护者需更换 GitHub secret NPM_TOKEN
+          python3 scripts/publish_npm_info.py || echo "::warning::npm publish 失败，版本信息仍会提交（不影响 Release）"
+
+      - name: Commit version info
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          VER="${PACKAGE_VERSION}-b${{ needs.Android.outputs.build }}"
+          # 回写 build-state.json 为本次实际构建状态：Android job 的计算结果只存在于其工作区，
+          # Release job 独立 checkout（拿到的仍是仓库旧值），必须在提交前用 outputs 重写，
+          # 否则 build/versionCode 状态永不持久化，下次构建会重复同一 bN
+          node -e "
+            const fs = require('fs');
+            const f = 'publish/build-state.json';
+            const p = JSON.parse(fs.readFileSync(f, 'utf8'));
+            p.baseVersion = process.argv[1];
+            p.build = Number(process.argv[2]);
+            p.versionCode = Number(process.argv[3]);
+            fs.writeFileSync(f, JSON.stringify(p, null, 2) + '\n');
+          " "${PACKAGE_VERSION}" "${{ needs.Android.outputs.build }}" "${{ needs.Android.outputs.versionCode }}"
+          git config user.name "luanmuc"
+          git config user.email "luanmuc@users.noreply.github.com"
+          git add publish/version.json publish/build-state.json npm-version-info/package.json
+          git commit -m "chore: 更新版本信息 v${VER}" || echo "无改动，跳过提交"
+          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:master || echo "推送失败（后续发布不影响已完成的 Release）"
