@@ -110,7 +110,7 @@ android {
 
     namespace "cn.toside.music.mobile"
     defaultConfig {
-        applicationId "com.luanmuc.lxmusic"
+        applicationId "com.luanmuc.audiocar"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode verCode
