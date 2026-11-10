@@ -86,7 +86,7 @@ const MenuItem = ({ id, icon, onPress }: {
   const theme = useTheme()
 
   return activeId == id
-    ? <View style={styles.menuItem}>
+    ? <View style={{ ...styles.menuItem, backgroundColor: theme['c-primary-background-active'] }}>
         <View style={styles.iconContent}>
           <Icon name={icon} size={48} color={theme['c-primary-font-active']} />
         </View>

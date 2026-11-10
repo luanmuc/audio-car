@@ -43,8 +43,8 @@ export default memo(({ isHome = false }: { isHome?: boolean }) => {
 const styles = createStyle({
   container: {
     width: '100%',
-    paddingVertical: 12,
-    paddingLeft: 8,
+    paddingVertical: 20,
+    paddingLeft: 12,
     borderTopLeftRadius: 6,
     borderTopRightRadius: 6,
     flexDirection: 'row',
