@@ -9,7 +9,6 @@ import type { InitState } from '@/store/common/state'
 // import commonState from '@/store/common/state'
 import { exitApp, setNavActiveId } from '@/core/common'
 import { setActiveList } from '@/core/list'
-import { BorderWidths } from '@/theme'
 import { useSettingValue } from '@/store/setting/hook'
 
 const NAV_WIDTH = 120
@@ -21,7 +20,7 @@ const styles = createStyle({
     // alignItems: 'center',
     // justifyContent: 'center',
     // padding: 10,
-    borderRightWidth: BorderWidths.normal,
+    borderRightWidth: 2,
     paddingBottom: 10,
     width: NAV_WIDTH,
   },
