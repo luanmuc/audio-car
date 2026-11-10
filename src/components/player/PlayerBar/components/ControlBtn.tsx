@@ -5,7 +5,7 @@ import { useTheme } from '@/store/theme/hook'
 import { playNext, playPrev, togglePlay } from '@/core/player/player'
 import { createStyle } from '@/utils/tools'
 
-const BTN_SIZE = 50
+const BTN_SIZE = 60
 const handlePlayPrev = () => {
   void playPrev()
 }

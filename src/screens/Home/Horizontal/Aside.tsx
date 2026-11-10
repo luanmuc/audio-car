@@ -79,24 +79,40 @@ const Header = () => {
 
 type IdType = InitState['navActiveId'] | 'nav_exit' | 'back_home'
 
+// 车机版：侧边栏菜单项中文标签
+const NAV_LABELS: Record<string, string> = {
+  nav_search: '搜索',
+  nav_songlist: '歌单',
+  nav_top: '排行榜',
+  nav_love: '收藏',
+  nav_download: '下载',
+  nav_setting: '设置',
+  nav_health: '健康',
+  nav_source: '音源',
+  nav_exit: '退出',
+  back_home: '首页',
+}
+
 const MenuItem = ({ id, icon, onPress }: {
   id: IdType
   icon: string
   onPress: (id: IdType) => void
 }) => {
-  // const t = useI18n()
   const activeId = useNavActiveId()
   const theme = useTheme()
+  const label = NAV_LABELS[id] || ''
 
   return activeId == id
     ? <View style={{ ...styles.menuItem, backgroundColor: theme['c-primary-background-active'] }}>
         <View style={styles.iconContent}>
           <Icon name={icon} size={48} color={theme['c-primary-font-active']} />
+          <Text size={14} color={theme['c-primary-font-active']} style={{ marginTop: 6 }}>{label}</Text>
         </View>
       </View>
     : <TouchableOpacity style={styles.menuItem} onPress={() => { onPress(id) }}>
         <View style={styles.iconContent}>
           <Icon name={icon} size={48} color={theme['c-font-label']} />
+          <Text size={14} color={theme['c-font-label']} style={{ marginTop: 6 }}>{label}</Text>
         </View>
       </TouchableOpacity>
 }
