@@ -88,3 +88,4 @@ const defaultSetting: LX.AppSetting = {
 }
 
 export default defaultSetting
+// car fix
