@@ -11,7 +11,7 @@ import Text from '@/components/common/Text'
  * @param prefix 前缀说明文字（播放页空间充足时显示，底部播放栏不显示）
  * @param size 字体大小
  */
-const PlayQualityTag = ({ label, prefix, size = 10 }: {
+const PlayQualityTag = ({ label, prefix, size = 14 }: {
   label: string
   prefix?: string
   size?: number
@@ -35,9 +35,9 @@ const styles = createStyle({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderRadius: 4,
-    paddingHorizontal: 5,
-    paddingVertical: 1,
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
   },
   labelText: {
     marginRight: 3,
