@@ -46,7 +46,7 @@ export default ({ isHome }: { isHome: boolean }) => {
   return (
     <TouchableOpacity style={styles.container} onLongPress={handleLongPress} onPress={handlePress} activeOpacity={0.7} >
       <View style={styles.titleRow}>
-        <Text style={styles.titleText} color={theme['c-font-label']} numberOfLines={1}>{title}</Text>
+        <Text style={styles.titleText} size={16} color={theme['c-font-label']} numberOfLines={1}>{title}</Text>
         {
           qualityLabel
             ? <PlayQualityTag label={qualityLabel} size={10} />

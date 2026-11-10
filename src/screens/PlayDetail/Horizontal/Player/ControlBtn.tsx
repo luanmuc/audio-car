@@ -44,10 +44,10 @@ const TogglePlayBtn = ({ size }: { size: number }) => {
   )
 }
 
-const MIN_SIZE = BTN_WIDTH * 1.1
+const MIN_SIZE = BTN_WIDTH * 2.5
 export default () => {
   const { onLayout, height, width } = useLayout()
-  const size = Math.max(Math.min(height * 0.65, (width - marginLeft) * 0.52 * 0.3) * global.lx.fontSize, MIN_SIZE)
+  const size = Math.max(Math.min(height * 0.8, (width - marginLeft) * 0.52 * 0.4) * global.lx.fontSize, MIN_SIZE)
   return (
     <View style={{ ...styles.content, gap: size * 0.5 }} onLayout={onLayout}>
       <PrevBtn size={size} />

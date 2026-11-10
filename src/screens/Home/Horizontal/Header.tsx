@@ -17,7 +17,7 @@ const headerComponents: Partial<Record<CommonState['navActiveId'], React.ReactNo
   nav_search: <SearchTypeSelector />,
 }
 
-const HEADER_HEIGHT = _HEADER_HEIGHT * 0.8
+const HEADER_HEIGHT = _HEADER_HEIGHT * 1.5
 
 
 // const LeftTitle = () => {
@@ -38,7 +38,7 @@ const LeftHeader = () => {
       paddingTop: statusBarHeight,
     }}>
       <View style={styles.left}>
-        <Text style={styles.leftTitle} size={18}>{t(id)}</Text>
+        <Text style={styles.leftTitle} size={22}>{t(id)}</Text>
       </View>
       {headerComponents[id] ?? null}
 
@@ -68,7 +68,7 @@ const RightHeader = () => {
       paddingTop: statusBarHeight,
     }}>
       <View style={styles.left}>
-        <Text style={styles.rightTitle} size={18}>{t(id)}</Text>
+        <Text style={styles.rightTitle} size={22}>{t(id)}</Text>
       </View>
       {headerComponents[id] ?? null}
       {/* <TouchableOpacity style={styles.btn} onPress={openSetting}>

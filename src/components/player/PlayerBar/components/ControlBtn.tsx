@@ -5,7 +5,7 @@ import { useTheme } from '@/store/theme/hook'
 import { playNext, playPrev, togglePlay } from '@/core/player/player'
 import { createStyle } from '@/utils/tools'
 
-const BTN_SIZE = 28
+const BTN_SIZE = 40
 const handlePlayPrev = () => {
   void playPrev()
 }
@@ -57,12 +57,10 @@ export default () => {
 
 const styles = createStyle({
   cotrolBtn: {
-    width: 52,
-    height: 52,
+    width: 72,
+    height: 72,
     justifyContent: 'center',
     alignItems: 'center',
-
-    // backgroundColor: '#ccc',
     shadowOpacity: 1,
     textShadowRadius: 1,
   },

@@ -12,7 +12,7 @@ import { setActiveList } from '@/core/list'
 import { BorderWidths } from '@/theme'
 import { useSettingValue } from '@/store/setting/hook'
 
-const NAV_WIDTH = 68
+const NAV_WIDTH = 100
 
 const styles = createStyle({
   container: {
@@ -45,13 +45,10 @@ const styles = createStyle({
   },
   menuItem: {
     flexDirection: 'row',
-    paddingTop: 15,
-    paddingBottom: 15,
-    // paddingLeft: 25,
-    // paddingRight: 25,
+    paddingTop: 25,
+    paddingBottom: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   iconContent: {
     // width: 24,
@@ -91,15 +88,13 @@ const MenuItem = ({ id, icon, onPress }: {
   return activeId == id
     ? <View style={styles.menuItem}>
         <View style={styles.iconContent}>
-          <Icon name={icon} size={20} color={theme['c-primary-font-active']} />
+          <Icon name={icon} size={36} color={theme['c-primary-font-active']} />
         </View>
-        {/* <Text style={styles.text} size={14} color={theme['c-primary-font']}>{t(id)}</Text> */}
       </View>
     : <TouchableOpacity style={styles.menuItem} onPress={() => { onPress(id) }}>
         <View style={styles.iconContent}>
-          <Icon name={icon} size={20} color={theme['c-font-label']} />
+          <Icon name={icon} size={36} color={theme['c-font-label']} />
         </View>
-        {/* <Text style={styles.text} size={14}>{t(id)}</Text> */}
       </TouchableOpacity>
 }
 

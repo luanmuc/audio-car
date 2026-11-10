@@ -120,8 +120,8 @@ const Progress = ({ progress, duration, buffered }: {
 }
 
 
-const progressContentPadding = 10
-const progressHeight = 3.6
+const progressContentPadding = 16
+const progressHeight = 8
 const progressContentHeight = progressContentPadding * 2 + progressHeight
 const progressHeightSize = scaleSizeH(progressHeight)
 let progressDotSize = scaleSizeW(progressContentHeight * 0.8)

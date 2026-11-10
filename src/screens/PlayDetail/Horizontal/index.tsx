@@ -82,20 +82,16 @@ const styles = createStyle({
   },
   left: {
     flex: 1,
-    width: '45%',
+    width: '50%',
     paddingBottom: 10,
-    // backgroundColor: 'rgba(0,0,0,0.1)',
   },
   leftContent: {
     flexShrink: 1,
     flexGrow: 0,
     marginLeft: marginLeftRaw,
-    // flexDirection: 'row',
-    // backgroundColor: 'rgba(0,0,0,0.1)',
-    // alignItems: 'center',
   },
   right: {
-    width: '55%',
+    width: '50%',
     flexGrow: 0,
     flexShrink: 0,
   },
