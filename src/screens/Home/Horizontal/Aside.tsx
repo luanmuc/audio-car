@@ -3,6 +3,7 @@ import { ScrollView, TouchableOpacity, View } from 'react-native'
 import { useNavActiveId, useStatusbarHeight } from '@/store/common/hook'
 import { useTheme } from '@/store/theme/hook'
 import { Icon } from '@/components/common/Icon'
+import { Text } from '@/components/common/Text'
 import { createStyle, exitApp as backHome } from '@/utils/tools'
 import { NAV_MENUS, LIST_IDS } from '@/config/constant'
 import type { InitState } from '@/store/common/state'
@@ -70,7 +71,7 @@ const Header = () => {
   return (
     <View style={{ paddingTop: statusBarHeight }}>
       <TouchableOpacity style={styles.header} onPress={handlePressLogo} activeOpacity={0.6}>
-        <Icon name="logo" color={theme['c-primary-dark-100-alpha-300']} size={48} />
+        <Text size={20} color={theme['c-primary-font-active']} weight="500">首页</Text>
       </TouchableOpacity>
     </View>
   )
