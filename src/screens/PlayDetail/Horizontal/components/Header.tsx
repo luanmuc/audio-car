@@ -24,8 +24,8 @@ const Title = () => {
 
   return (
     <View style={styles.titleContent}>
-      <Text numberOfLines={1} style={styles.title} size={22}>{musicInfo.name}</Text>
-      <Text numberOfLines={1} style={styles.title} size={16} color={theme['c-font-label']}>{musicInfo.singer}</Text>
+      <Text numberOfLines={1} style={styles.title} size={28}>{musicInfo.name}</Text>
+      <Text numberOfLines={1} style={styles.title} size={20} color={theme['c-font-label']}>{musicInfo.singer}</Text>
     </View>
   )
 }
@@ -44,7 +44,7 @@ export default memo(() => {
     <View style={{ height: HEADER_HEIGHT }} nativeID={NAV_SHEAR_NATIVE_IDS.playDetail_header}>
       <View style={styles.container}>
         <TouchableOpacity onPress={back} style={{ ...styles.button, width: HEADER_HEIGHT }}>
-          <Icon name="chevron-left" size={28} />
+          <Icon name="chevron-left" size={36} />
         </TouchableOpacity>
         <Title />
         <DesktopLyricBtn />

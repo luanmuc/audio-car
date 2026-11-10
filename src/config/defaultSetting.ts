@@ -42,7 +42,7 @@ const defaultSetting: LX.AppSetting = {
   // 'playDetail.isShowLyricProgressSetting': false,
   'playDetail.style.align': 'center',
   'playDetail.vertical.style.lrcFontSize': 210,
-  'playDetail.horizontal.style.lrcFontSize': 280,
+  'playDetail.horizontal.style.lrcFontSize': 320,
   'playDetail.isShowLyricProgressSetting': true,
 
   'desktopLyric.enable': false,

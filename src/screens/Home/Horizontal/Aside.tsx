@@ -12,7 +12,7 @@ import { setActiveList } from '@/core/list'
 import { BorderWidths } from '@/theme'
 import { useSettingValue } from '@/store/setting/hook'
 
-const NAV_WIDTH = 100
+const NAV_WIDTH = 120
 
 const styles = createStyle({
   container: {
@@ -45,8 +45,8 @@ const styles = createStyle({
   },
   menuItem: {
     flexDirection: 'row',
-    paddingTop: 25,
-    paddingBottom: 25,
+    paddingTop: 30,
+    paddingBottom: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -88,12 +88,12 @@ const MenuItem = ({ id, icon, onPress }: {
   return activeId == id
     ? <View style={styles.menuItem}>
         <View style={styles.iconContent}>
-          <Icon name={icon} size={36} color={theme['c-primary-font-active']} />
+          <Icon name={icon} size={48} color={theme['c-primary-font-active']} />
         </View>
       </View>
     : <TouchableOpacity style={styles.menuItem} onPress={() => { onPress(id) }}>
         <View style={styles.iconContent}>
-          <Icon name={icon} size={36} color={theme['c-font-label']} />
+          <Icon name={icon} size={48} color={theme['c-font-label']} />
         </View>
       </TouchableOpacity>
 }
