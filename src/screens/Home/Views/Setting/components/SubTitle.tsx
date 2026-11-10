@@ -10,7 +10,7 @@ export default memo(({ title, children }: {
 }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title} size={16}>{title}</Text>
       {children}
     </View>
   )
