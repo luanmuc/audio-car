@@ -12,16 +12,18 @@ const abis = [
   'universal',
 ]
 
+// 车机版：更新通道指向 audio-car 仓库，不再检查原版 mobile-app 的更新
+const CAR_REPO = 'audio-car'
 const address = [
-  [`https://raw.githubusercontent.com/${author.name}/${name}/master/publish/version.json`, 'direct'],
+  [`https://raw.githubusercontent.com/${author.name}/${CAR_REPO}/master/publish/version.json`, 'direct'],
   // npm 包通道：npmmirror（阿里云）国内必达，放在 GitHub 系源之后立即尝试
-  ['https://registry.npmmirror.com/luanmuc-lx-music-version-info/latest', 'npm'],
+  ['https://registry.npmmirror.com/luanmuc-audio-car-version-info/latest', 'npm'],
   // npm 官方源
-  ['https://registry.npmjs.org/luanmuc-lx-music-version-info/latest', 'npm'],
+  ['https://registry.npmjs.org/luanmuc-audio-car-version-info/latest', 'npm'],
   // jsdelivr 语法需 @分支（@master），否则 master 会被当作文件路径返回 404
-  [`https://cdn.jsdelivr.net/gh/${author.name}/${name}@master/publish/version.json`, 'direct'],
-  [`https://fastly.jsdelivr.net/gh/${author.name}/${name}@master/publish/version.json`, 'direct'],
-  [`https://gcore.jsdelivr.net/gh/${author.name}/${name}@master/publish/version.json`, 'direct'],
+  [`https://cdn.jsdelivr.net/gh/${author.name}/${CAR_REPO}@master/publish/version.json`, 'direct'],
+  [`https://fastly.jsdelivr.net/gh/${author.name}/${CAR_REPO}@master/publish/version.json`, 'direct'],
+  [`https://gcore.jsdelivr.net/gh/${author.name}/${CAR_REPO}@master/publish/version.json`, 'direct'],
 ]
 
 
