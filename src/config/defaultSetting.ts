@@ -79,8 +79,8 @@ const defaultSetting: LX.AppSetting = {
   'sync.enable': false,
 
   // 车机版：默认深色主题
-  'theme.id': 'black',
-  'theme.lightId': 'black',
+  'theme.id': 'green',
+  'theme.lightId': 'green',
   'theme.darkId': 'black',
   'theme.hideBgDark': false,
   'theme.dynamicBg': false,

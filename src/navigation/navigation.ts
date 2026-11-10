@@ -38,7 +38,7 @@ export async function pushHomeScreen() {
         style: 'light',
       },
       layout: {
-        orientation: ['portrait'],
+        orientation: ['landscape'],
       },
       bottomTabs: {
         titleDisplayMode: 'alwaysShow',
@@ -105,7 +105,7 @@ export function pushPlayDetailScreen(componentId: string, skipAnimation = false)
         style: 'light',
       },
       layout: {
-        orientation: ['portrait'],
+        orientation: ['landscape'],
       },
       bottomTabs: {
         titleDisplayMode: 'alwaysShow',
@@ -323,7 +323,7 @@ export function pushCommentScreen(componentId: string) {
         style: 'light',
       },
       layout: {
-        orientation: ['portrait'],
+        orientation: ['landscape'],
       },
       bottomTabs: {
         titleDisplayMode: 'alwaysShow',
@@ -407,7 +407,7 @@ export function pushCommentScreen(componentId: string) {
 //         style: 'light',
 //       },
 //       layout: {
-//         orientation: ['portrait'],
+//         orientation: ['landscape'],
 //       },
 //       bottomTabs: {
 //         titleDisplayMode: 'alwaysShow',
