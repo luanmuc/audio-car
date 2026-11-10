@@ -14,7 +14,8 @@ export const ITEM_HEIGHT = scaleSizeH(LIST_ITEM_HEIGHT)
 
 const useQualityTag = (musicInfo: LX.Music.MusicInfoOnline) => {
   const t = useI18n()
-  const qualitys = musicInfo.meta?._qualitys ?? ({} as Record<string, boolean>)
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const qualitys = (musicInfo.meta?._qualitys ?? {}) as Record<string, boolean>
   let info: { type: BadgeType | null, text: string } = { type: null, text: '' }
   if (qualitys.flac24bit) {
     info.type = 'secondary'
