@@ -32,15 +32,15 @@ const styles = createStyle({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingLeft: 16,
-    paddingRight: 16,
-    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingBottom: 16,
   },
   item: {
-    paddingLeft: 16,
-    paddingRight: 16,
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 16,
+    paddingBottom: 16,
     borderBottomWidth: 0.5,
   },
 })
@@ -75,8 +75,8 @@ export default forwardRef<ModalType, {}>((props, ref) => {
       <View style={styles.container}>
         <View style={{ ...styles.card, backgroundColor: theme['c-content-background'], borderColor: theme['c-border-background'] }}>
           <View style={styles.header}>
-            <Text size={16} color={theme['c-font']}>{listName}</Text>
-            <Text size={12} color={theme['c-font-label']}>{t('play_list_song_count', { num: list.length })}</Text>
+            <Text size={20} color={theme['c-font']}>{listName}</Text>
+            <Text size={16} color={theme['c-font-label']}>{t('play_list_song_count', { num: list.length })}</Text>
           </View>
           <FlatList
             data={list}
@@ -93,12 +93,12 @@ export default forwardRef<ModalType, {}>((props, ref) => {
                   }}
                 >
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text size={13} color={isCurrent ? theme['c-primary'] : theme['c-font']} numberOfLines={1} style={{ flex: 1 }}>
+                    <Text size={18} color={isCurrent ? theme['c-primary'] : theme['c-font']} numberOfLines={1} style={{ flex: 1 }}>
                       {isCurrent ? '▶ ' : ''}{index + 1}. {item.name}
                     </Text>
-                    {isCurrent ? <Text size={11} color={theme['c-primary']}>{t('playing')}</Text> : null}
+                    {isCurrent ? <Text size={14} color={theme['c-primary']}>{t('playing')}</Text> : null}
                   </View>
-                  <Text size={11} color={theme['c-font-label']} numberOfLines={1} style={{ marginTop: 2 }}>{item.singer}</Text>
+                  <Text size={14} color={theme['c-font-label']} numberOfLines={1} style={{ marginTop: 4 }}>{item.singer}</Text>
                 </TouchableOpacity>
               )
             }}
