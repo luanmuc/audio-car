@@ -54,7 +54,7 @@ musicSdk（内置官方源）  ──┐
 
 App 侧入口：`src/core/init/userApi/index.ts`；原生 QuickJS 引擎：`android/app/src/main/java/cn/toside/music/mobile/userApi/`。
 
-## 四、聚合源内部结构（豆包定制 v8.11.6）
+## 四、聚合源内部结构（豆包定制 v8.16.0）
 
 > 每次构建自动拉取音源仓库 master 最新版，以下为当前结构；随音源迭代会更新。
 > **注**：`v8.11.6` 为音源本体当前版本（**L4 裁决层**：admit 单一入口、证据分级 strong/medium/weak、codeRank 代表码、弱证据 TTL ≤60s、链过滤分层、关源对称清账、HEAD 补证）。此前巡检脚本侧迭代已并入本版基线；`gdWy` 已于音源仓 `39a0fa8` 默认关闭。
